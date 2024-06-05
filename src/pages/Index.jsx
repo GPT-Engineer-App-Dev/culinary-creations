@@ -1,4 +1,5 @@
-import { Container, Text, VStack, Heading, Box, Image, SimpleGrid } from "@chakra-ui/react";
+import { Container, Text, VStack, Heading, Box, Image, SimpleGrid, Button } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const recipes = [
   {
@@ -18,12 +19,15 @@ const recipes = [
   },
 ];
 
-const Index = () => {
+const Index = ({ recipes }) => {
   return (
     <Container centerContent maxW="container.lg" py={10}>
       <VStack spacing={8}>
         <Heading as="h1" size="2xl">Recipe Sharing Website</Heading>
         <Text fontSize="lg">Discover and share your favorite recipes!</Text>
+        <Link to="/submit-recipe">
+          <Button colorScheme="teal" size="lg">Submit Recipe</Button>
+        </Link>
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
           {recipes.map((recipe, index) => (
             <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="md">
