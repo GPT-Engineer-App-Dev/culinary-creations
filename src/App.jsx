@@ -22,6 +22,12 @@ function App() {
     },
   ]);
 
+  const [ratings, setRatings] = useState([
+    { recipeId: 0, rating: 4.5, count: 10 },
+    { recipeId: 1, rating: 4.0, count: 8 },
+    { recipeId: 2, rating: 3.5, count: 12 },
+  ]);
+
   const addRecipe = (recipe) => {
     setRecipes([...recipes, recipe]);
   };
@@ -29,7 +35,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Index recipes={recipes} />} />
+        <Route exact path="/" element={<Index recipes={recipes} ratings={ratings} setRatings={setRatings} />} />
         <Route path="/submit-recipe" element={<SubmitRecipe addRecipe={addRecipe} />} />
       </Routes>
     </Router>

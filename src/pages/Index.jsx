@@ -1,5 +1,7 @@
 import { Container, Text, VStack, Heading, Box, Image, SimpleGrid, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { FaStar } from "react-icons/fa";
 
 const recipes = [
   {
@@ -19,7 +21,54 @@ const recipes = [
   },
 ];
 
+const Rating = ({ recipeId, ratings, setRatings }) => {
+  const [hover, setHover] = useState(null);
+
+  const handleRating = (ratingValue) => {
+    const newRatings = ratings.map((rating) => {
+      if (rating.recipeId === recipeId) {
+        const newCount = rating.count + 1;
+        const newRating = (rating.rating * rating.count + ratingValue) / newCount;
+        return { ...rating, rating: newRating, count: newCount };
+      }
+      return rating;
+    });
+    setRatings(newRatings);
+  };
+
+  const currentRating = ratings.find((rating) => rating.recipeId === recipeId)?.rating || 0;
+
+  return (
+    <div>
+      {[...Array(5)].map((star, index) => {
+        const ratingValue = index + 1;
+        return (
+          <label key={index}>
+            <input
+              type="radio"
+              name={`rating-${recipeId}`}
+              value={ratingValue}
+              onClick={() => handleRating(ratingValue)}
+              style={{ display: "none" }}
+            />
+            <FaStar
+              size={24}
+              color={ratingValue <= (hover || currentRating) ? "#ffc107" : "#e4e5e9"}
+              onMouseEnter={() => setHover(ratingValue)}
+              onMouseLeave={() => setHover(null)}
+              style={{ cursor: "pointer" }}
+            />
+          </label>
+        );
+      })}
+      <Text>{currentRating.toFixed(1)} ({ratings.find((rating) => rating.recipeId === recipeId)?.count || 0} ratings)</Text>
+    </div>
+  );
+};
+
 const Index = ({ recipes }) => {
+  const [ratings, setRatings] = useState(recipes.map((_, index) => ({ recipeId: index, rating: 0, count: 0 })));
+
   return (
     <Container centerContent maxW="container.lg" py={10}>
       <VStack spacing={8}>
@@ -35,6 +84,7 @@ const Index = ({ recipes }) => {
               <Box p={6}>
                 <Heading as="h3" size="md" mb={2}>{recipe.title}</Heading>
                 <Text>{recipe.description}</Text>
+                <Rating recipeId={index} ratings={ratings} setRatings={setRatings} />
               </Box>
             </Box>
           ))}
